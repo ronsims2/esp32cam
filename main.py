@@ -1,30 +1,10 @@
-import network
-import time
+from src import microdot as md
 
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
+app = md.Microdot()
 
-try:
-	with open('config.txt') as f:
-		config = f.readline()
-
-	ssid,pw = config.split(',')
-	wlan.connect(ssid,pw)
+@app.route('/')
+def index(req):
+	return 'hello world'
 	
-	timeout = 30
-	clock = 0
-	while wlan.isconnected() == False:
-		if clock >= timeout:
-			raise Exception('timeout', 'Could not connect')
-			break
-			
 
-		print('Connecting to ' + ssid + '...') 
-		time.sleep(1)
-		clock += 1
-		
-
-except Exception as e:
-	print(e)
-
-print('Connected to ' + ssid)
+app.run(port=80)

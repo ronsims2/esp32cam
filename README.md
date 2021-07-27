@@ -52,6 +52,11 @@ Assuming python is arleady installed and the shell starts with a catch all one a
 
 ``pipenv install adafruit-ampy``
 
+**Note:** Using picocom open a a REPL on the device and install all dependencies impoted into the python program using upip!
+
+``import upip
+upip.install('picoweb')``
+
 
 From the  project working directory where the code is located run the following:
  
