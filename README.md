@@ -69,3 +69,11 @@ Push the file to the board
 
 **Note:** I tried and tried to get picocom to write python files and this has been an exercise in futility.
 
+---
+
+## Resources
+[ESP32-CAM Intro](https://dronebotworkshop.com/esp32-cam-intro/)
+[Micropython on the ESP32-CAM](https://lemariva.com/blog/2019/09/micropython-how-about-taking-photo-esp32)
+[Ampy Tutorial](https://www.digikey.com/en/maker/projects/micropython-basics-load-files-run-code/fb1fcedaf11e4547943abfdd8ad825ce)
+[ESP32-CAM Pin Diagram](https://www.geekering.com/categories/embedded-sytems/esp32/ricardocarreira/esp32-cam-board-how-to-begin-and-blink-a-led/)
+[ESP32-CAM Firmware & Docs](https://github.com/lemariva/micropython-camera-driver)
