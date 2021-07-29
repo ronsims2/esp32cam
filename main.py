@@ -4,25 +4,8 @@ from machine import Pin
 import camera
 
 led_flash = Pin(4, Pin.OUT)
-# cam_stat = cam_up()
+# cam_stat = camera.init(0, format=camera.JPEG)
 app = md.Microdot()
-
-
-def cam_up():
-	attempts = 0
-	up = false
-	try:
-		while attempts < 10 and up is not False:
-			up = camera.init(0, format=camera.JPEG)
-			attempts += 1
-			if up:
-				return up
-			else:
-				camera.deinit()
-				time.sleep(1)
-	except Exception as e:
-		return str(e)
-
 
 
 def blink_flash(t=0):
@@ -41,7 +24,7 @@ def index(req):
 	
 @app.route('/cam-up')
 def test(req):
-	return cam_up()
+	return 'Camera up:'
 
 
 @app.route('/pic')
@@ -55,5 +38,5 @@ def snap(req):
 	
 	
 	
-blink_flash(1)
-app.run(port=80, debug=True)
+blink_flash(0.1)
+app.run(port=8080)
