@@ -64,7 +64,7 @@ From the  project working directory where the code is located run the following:
 
 Push the file to the board
 
-``sudo ampy --port /dev/ttyUSB0 push main.py``
+``sudo ampy --port /dev/ttyUSB0 put main.py``
 
 
 **Note:** I tried and tried to get picocom to write python files and this has been an exercise in futility.
