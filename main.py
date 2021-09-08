@@ -6,6 +6,24 @@ import camera
 led_flash = Pin(4, Pin.OUT)
 app = md.Microdot()
 
+def init_cam(attempt=10):
+	tries = 0
+	success = False
+	
+	while tries < attempt or not success:
+		try:
+			cam_stat = camera.init(0, format=camera.JPEG)
+			camera.framesize(camera.FRAME_240x240)
+			if cam_stat:
+				success = True
+		except Exception as e:
+			print(e.message)
+		finally:
+			tries += 1
+			time.sleep(2.5)
+			
+	return success
+
 
 def blink_flash(t=0):
 	led_flash.value(0)
@@ -29,13 +47,12 @@ def test(req):
 @app.route('/pic')
 def snap(req):
 	blink_flash(1)
-	cam_stat = camera.init(0, format=camera.JPEG)
-	# give cam time to focus
-	time.sleep(2)
-	pic = camera.capture()
 	
-	return cam_stat
-	
+	if init_cam():
+		pic = camera.capture()
+		camera.deinit()
+		
+		return 'foobar'
 	
 	
 blink_flash(0.1)

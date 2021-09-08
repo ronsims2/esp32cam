@@ -1,6 +1,7 @@
 import time
 from machine import Pin
 import camera
+from binascii import b2a_base64
 
 cam_stat = camera.init(0, format=camera.JPEG)
 time.sleep(4)
@@ -12,8 +13,9 @@ led_flash.value(0)
 
 
 if cam_stat:
+    camera.flip(1)
     pic = camera.capture()
     camera.deinit()
-    print(pic)
+    print(b2a_base64(pic)decode('ascii').strip())
 else:
     print('Cam error, cam status: {}'.format(cam_stat))
