@@ -2,6 +2,7 @@ from src import microdot as md
 import time
 from machine import Pin
 import camera
+from binascii import b2a_base64
 
 led_flash = Pin(4, Pin.OUT)
 app = md.Microdot()
@@ -13,11 +14,10 @@ def init_cam(attempt=10):
 	while tries < attempt or not success:
 		try:
 			cam_stat = camera.init(0, format=camera.JPEG)
-			camera.framesize(camera.FRAME_240x240)
 			if cam_stat:
 				success = True
 		except Exception as e:
-			print(e.message)
+			print(e)
 		finally:
 			tries += 1
 			time.sleep(2.5)
@@ -52,7 +52,9 @@ def snap(req):
 		pic = camera.capture()
 		camera.deinit()
 		
-		return 'foobar'
+		return b2a_base64(pic).decode('ascii')
+	else:
+		return 'camera failed to init.'
 	
 	
 blink_flash(0.1)
