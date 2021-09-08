@@ -13,9 +13,10 @@ led_flash.value(0)
 
 
 if cam_stat:
-    camera.flip(1)
+    # This flip does some weird striping me no like
+    # camera.flip(1) 
     pic = camera.capture()
     camera.deinit()
-    print(b2a_base64(pic)decode('ascii').strip())
+    print(b2a_base64(pic).decode('ascii'))
 else:
     print('Cam error, cam status: {}'.format(cam_stat))
