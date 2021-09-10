@@ -11,11 +11,12 @@ def init_cam(attempt=10):
 	tries = 0
 	success = False
 	
-	while tries < attempt or not success:
+	while tries < attempt:
 		try:
 			cam_stat = camera.init(0, format=camera.JPEG)
 			if cam_stat:
 				success = True
+				break
 		except Exception as e:
 			print(e)
 		finally:
