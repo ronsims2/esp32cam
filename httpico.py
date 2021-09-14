@@ -1,4 +1,17 @@
 import usocket
+import network
+import utime
+from machine import Pin
+import camera
+from binascii import b2a_base64
+
+
+utime.sleep(10)
+cam_stat = camera.init(0, format=camera.JPEG)
+utime.sleep(4)
+
+OK_HEADER = 'HTTP/1.0 200 OK\n\n'
+ERROR_HEADER = 'HTTP/1.0 500 ERROR\n\n'
 
 
 def get_httpico(address, port, timeout):
@@ -30,18 +43,33 @@ def start_server(_httpico, callback):
         print(req)
         
         if callback is None:
-            resp = 'HTTP/1.0 500 OK\n\nNo route handler specified.'
+            resp = ERROR_HEADER + 'No route handler specified.'
         else:
-            filtered = callback('HTTP/1.0 200 OK\n\nHello World')
+            filtered = callback(req)
             client_conn.sendall(filtered)
             client_conn.close()
         
 
 
-def httpico_callback(payload):
-    return payload
+def httpico_callback(req):
+    if cam_stat:
+        # This flip does some weird striping me no like
+        # camera.flip(1) 
+        pic = camera.capture()
+        # camera.deinit()
+        return OK_HEADER + b2a_base64(pic).decode('ascii')
+    else:
+        return ERROR_HEADER + 'Cam error, cam status: {}'.format(cam_stat)
 
 
 
-h = get_httpico('192.168.50.151', 8080, 360)
+wlan = network.WLAN(network.STA_IF)
+info = wlan.ifconfig()
+print(info)
+h = get_httpico(info[0], 8080, 360)
 start_server(h, httpico_callback)
+
+led_flash = Pin(4, Pin.OUT)
+led_flash.value(1)
+utime.sleep(0.1)
+led_flash.value(0)
