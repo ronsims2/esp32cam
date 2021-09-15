@@ -20,7 +20,7 @@ def get_httpico(address, port, timeout):
     s.setsockopt(usocket.SOL_SOCKET, usocket.SO_REUSEADDR, 1)
     s.settimeout(timeout)
     s.bind((address, port))
-    s.listen(1)
+    s.listen()
     
     
     _httpico = {
@@ -37,18 +37,25 @@ def start_server(_httpico, callback):
         return False
         
     while True:
-        client_conn, client_addr = _httpico['socket'].accept()
-        req = client_conn.recv(1024).decode()
+        try:
+            client_conn, client_addr = _httpico['socket'].accept()
+            req = client_conn.recv(1024).decode()
         
-        print(req)
+            print(req)
         
-        if callback is None:
-            resp = ERROR_HEADER + 'No route handler specified.'
-        else:
-            filtered = callback(req)
-            client_conn.sendall(filtered)
-            client_conn.close()
+            if callback is None:
+                resp = ERROR_HEADER + 'No route handler specified.'
+            else:
+                resp = callback(req)
+            
         
+            client_conn.sendall(resp)
+        except Exception as e:
+            print(e)
+
+        finally:
+            if client_conn:
+                client_conn.close()
 
 
 def httpico_callback(req):
@@ -66,7 +73,7 @@ def httpico_callback(req):
 wlan = network.WLAN(network.STA_IF)
 info = wlan.ifconfig()
 print(info)
-h = get_httpico(info[0], 8080, 360)
+h = get_httpico(info[0], 8080, 30)
 start_server(h, httpico_callback)
 
 led_flash = Pin(4, Pin.OUT)
