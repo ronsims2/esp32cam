@@ -47,7 +47,7 @@ def start_server(_httpico, callback):
             resp = callback(req)
             
         client_conn.sendall(resp)
-        client_conn.close()
+        client_conn.close()git 
                 
 
 
