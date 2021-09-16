@@ -1,5 +1,4 @@
 import usocket
-import network
 import utime
 from machine import Pin
 import camera
@@ -20,7 +19,7 @@ def get_httpico(address, port, timeout):
     s.setsockopt(usocket.SOL_SOCKET, usocket.SO_REUSEADDR, 1)
     s.settimeout(timeout)
     s.bind((address, port))
-    s.listen()
+    s.listen(10)
     
     
     _httpico = {
@@ -37,43 +36,33 @@ def start_server(_httpico, callback):
         return False
         
     while True:
-        try:
-            client_conn, client_addr = _httpico['socket'].accept()
-            req = client_conn.recv(1024).decode()
+        client_conn, client_addr = _httpico['socket'].accept()
+        req = client_conn.recv(1024).decode()
         
-            print(req)
+        print(req)
         
-            if callback is None:
-                resp = ERROR_HEADER + 'No route handler specified.'
-            else:
-                resp = callback(req)
+        if callback is None:
+            resp = ERROR_HEADER + 'No route handler specified.'
+        else:
+            resp = callback(req)
             
-        
-            client_conn.sendall(resp)
-        except Exception as e:
-            print(e)
-
-        finally:
-            if client_conn:
-                client_conn.close()
+        client_conn.sendall(resp)
+        client_conn.close()
+                
 
 
 def httpico_callback(req):
     if cam_stat:
         # This flip does some weird striping me no like
-        # camera.flip(1) 
+        camera.flip(1) 
         pic = camera.capture()
-        # camera.deinit()
         return OK_HEADER + b2a_base64(pic).decode('ascii')
     else:
         return ERROR_HEADER + 'Cam error, cam status: {}'.format(cam_stat)
 
 
 
-wlan = network.WLAN(network.STA_IF)
-info = wlan.ifconfig()
-print(info)
-h = get_httpico(info[0], 8080, 30)
+h = get_httpico('192.168.50.151', 8080, 15)
 start_server(h, httpico_callback)
 
 led_flash = Pin(4, Pin.OUT)
