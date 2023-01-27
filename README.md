@@ -16,7 +16,7 @@ Install picocom and sz to handle serial communication and file transfer respecti
 
 Connect to the board:
 
-``sudo picocom /dev/tstyUSB0 -b115200``
+``sudo picocom /dev/ttyUSB0 -b115200``
 
 Press enter to open the REPL.  Picocom has several commands to see them press **Ctrl-a** and then ***Ctrl-h***
 
